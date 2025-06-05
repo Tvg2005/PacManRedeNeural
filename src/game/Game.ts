@@ -11,7 +11,7 @@ export class Game {
   private width: number;
   private height: number;
   private gameOver: boolean;
-  private maxTime: number = 30; // Increased from 20 to 30 seconds per game
+  private maxTime: number = 20; 
   private elapsedTime: number = 0;
   private timeScale: number = 1;
   

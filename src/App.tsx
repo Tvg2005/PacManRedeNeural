@@ -8,7 +8,7 @@ function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [generation, setGeneration] = useState(0);
-  const [aliveCount, setAliveCount] = useState(12);
+  const [aliveCount, setAliveCount] = useState(16);
   const [bestScore, setBestScore] = useState(0);
   const [currentBestScore, setCurrentBestScore] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
@@ -20,7 +20,7 @@ function App() {
     setGeneration(0);
     setBestScore(0);
     setCurrentBestScore(0);
-    setAliveCount(12);
+    setAliveCount(16);
   };
   
   const handleSpeedChange = (newSpeed: number) => {
@@ -29,7 +29,7 @@ function App() {
   
   const handleGenerationComplete = (newGeneration: number, bestScoreAchieved: number) => {
     setGeneration(newGeneration);
-    setAliveCount(12);
+    setAliveCount(16);
     if (bestScoreAchieved > bestScore) {
       setBestScore(bestScoreAchieved);
     }

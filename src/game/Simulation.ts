@@ -13,7 +13,7 @@ export class Simulation {
   private timeScale: number;
   private lastTime: number;
   private animationFrameId: number | null;
-  private numberOfGames: number = 12; // Changed to 12 games
+  private numberOfGames: number = 16; // Changed to 12 games
   private onPacmanDeath: () => void;
   private onScoreUpdate: (score: number) => void;
   private onGenerationComplete: (generation: number, bestScore: number) => void;
@@ -142,9 +142,9 @@ export class Simulation {
   private draw(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
-    // Calculate grid layout - 4x3 grid
+    // Calculate grid layout - 6x6 grid
     const cols = 4;
-    const rows = 3;
+    const rows = 4;
     
     const gameWidth = this.canvas.width / cols;
     const gameHeight = this.canvas.height / rows;

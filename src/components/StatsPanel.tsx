@@ -38,7 +38,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
           </div>
           <div className="flex items-center">
             <p className="text-3xl font-bold text-green-400">{aliveCount}</p>
-            <p className="text-xl ml-2 text-gray-400">/ 12</p>
+            <p className="text-xl ml-2 text-gray-400">/ 16</p>
           </div>
           <p className="text-sm text-gray-400 mt-1">Surviving agents</p>
         </div>
@@ -68,7 +68,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
           <div className="w-full bg-gray-600 rounded-full h-4 mb-3">
             <div 
               className="bg-gradient-to-r from-blue-500 to-purple-500 h-4 rounded-full transition-all duration-300"
-              style={{ width: `${Math.min(100, (bestScore / 1000) * 100)}%` }}
+              style={{ width: `${Math.min(100, (bestScore / 5000) * 100)}%` }}
             ></div>
           </div>
           <p className="text-sm text-gray-400">Based on highest score achieved</p>
