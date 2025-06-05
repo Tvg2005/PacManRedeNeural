@@ -66,11 +66,11 @@ const InfoPanel: React.FC<InfoPanelProps> = ({ onClose }) => {
               <ol className="space-y-3 text-gray-300">
                 <li className="flex">
                   <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">1</span>
-                  <span>10 Pacmans with randomly initialized neural networks begin playing</span>
+                  <span>12 Pacmans with randomly initialized neural networks begin playing</span>
                 </li>
                 <li className="flex">
                   <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">2</span>
-                  <span>Each Pacman plays until it's caught by a ghost or the time limit expires</span>
+                  <span>Each Pacman plays until it's caught by a ghost</span>
                 </li>
                 <li className="flex">
                   <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">3</span>

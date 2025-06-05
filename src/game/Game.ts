@@ -11,18 +11,18 @@ export class Game {
   private width: number;
   private height: number;
   private gameOver: boolean;
-  private maxTime: number = 20; // Reduced from 30 to 20 seconds per game
+  private maxTime: number = 30; // Increased from 20 to 30 seconds per game
   private elapsedTime: number = 0;
   private timeScale: number = 1;
   
   constructor(width: number, height: number, brain?: NeuralNetwork) {
     this.width = width;
     this.height = height;
-    this.cellSize = 30; // Increased from 20 to 30 for better visibility in smaller mazes
+    this.cellSize = Math.min(width, height) / 20; // Adjust cell size based on canvas dimensions
     
-    // Calculate maze dimensions based on canvas size but keep it smaller
-    const mazeWidth = Math.min(15, Math.floor(width / this.cellSize)); // Limit max width
-    const mazeHeight = Math.min(15, Math.floor(height / this.cellSize)); // Limit max height
+    // Calculate maze dimensions based on canvas size
+    const mazeWidth = Math.floor(width / this.cellSize);
+    const mazeHeight = Math.floor(height / this.cellSize);
     
     // Create the maze
     this.maze = new Maze(mazeWidth, mazeHeight);
@@ -68,7 +68,7 @@ export class Game {
     
     // Update game time
     this.elapsedTime += scaledDelta;
-    if (this.elapsedTime >= this.maxTime) {
+    if (this.elapsedTime >= this.maxTime * this.timeScale) {
       this.gameOver = true;
       return;
     }
@@ -109,6 +109,11 @@ export class Game {
     
     // Draw time remaining
     this.drawTime(ctx);
+    
+    // Draw game over overlay if game is over
+    if (this.gameOver) {
+      this.drawGameOver(ctx);
+    }
   }
   
   private drawMaze(ctx: CanvasRenderingContext2D): void {
@@ -395,6 +400,21 @@ export class Game {
     ctx.font = '16px Arial';
     ctx.textAlign = 'right';
     ctx.fillText(`Time: ${timeLeft.toFixed(1)}s`, this.width - 10, 20);
+  }
+  
+  private drawGameOver(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(0, 0, this.width, this.height);
+    
+    ctx.fillStyle = '#ef4444';
+    ctx.font = 'bold 48px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('GAME OVER', this.width / 2, this.height / 2);
+    
+    ctx.font = '24px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(`Score: ${this.pacman.getScore()}`, this.width / 2, this.height / 2 + 40);
   }
   
   isGameOver(): boolean {

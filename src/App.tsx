@@ -8,7 +8,7 @@ function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [generation, setGeneration] = useState(0);
-  const [aliveCount, setAliveCount] = useState(10);
+  const [aliveCount, setAliveCount] = useState(12);
   const [bestScore, setBestScore] = useState(0);
   const [currentBestScore, setCurrentBestScore] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
@@ -20,7 +20,7 @@ function App() {
     setGeneration(0);
     setBestScore(0);
     setCurrentBestScore(0);
-    setAliveCount(10);
+    setAliveCount(12);
   };
   
   const handleSpeedChange = (newSpeed: number) => {
@@ -29,7 +29,7 @@ function App() {
   
   const handleGenerationComplete = (newGeneration: number, bestScoreAchieved: number) => {
     setGeneration(newGeneration);
-    setAliveCount(10);
+    setAliveCount(12);
     if (bestScoreAchieved > bestScore) {
       setBestScore(bestScoreAchieved);
     }
@@ -91,12 +91,6 @@ function App() {
                   1x
                 </button>
                 <button 
-                  onClick={() => handleSpeedChange(2)} 
-                  className={`text-xs ${speed === 2 ? 'text-yellow-400 font-bold' : 'text-gray-300'}`}
-                >
-                  2x
-                </button>
-                <button 
                   onClick={() => handleSpeedChange(5)} 
                   className={`text-xs ${speed === 5 ? 'text-yellow-400 font-bold' : 'text-gray-300'}`}
                 >
@@ -107,6 +101,12 @@ function App() {
                   className={`text-xs ${speed === 10 ? 'text-yellow-400 font-bold' : 'text-gray-300'}`}
                 >
                   10x
+                </button>
+                <button 
+                  onClick={() => handleSpeedChange(50)} 
+                  className={`text-xs ${speed === 50 ? 'text-yellow-400 font-bold' : 'text-gray-300'}`}
+                >
+                  50x
                 </button>
               </div>
             </div>

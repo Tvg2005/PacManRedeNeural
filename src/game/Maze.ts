@@ -10,7 +10,7 @@ export class Maze {
   private width: number;
   private height: number;
   private cells: Cell[][];
-  private wallProbability: number = 0.4; // Increased from 0.3 to 0.4 for more walls
+  private wallProbability: number = 0.25; // Reduced wall probability
   
   constructor(width: number, height: number) {
     this.width = width;
@@ -43,8 +43,8 @@ export class Maze {
       this.cells[y][this.width - 1].isWall = true;
     }
     
-    // Generate maze using randomized DFS
-    this.generateMaze(2, 2);
+    // Generate maze using a more structured approach
+    this.generateStructuredMaze();
     
     // Add dots and fruits
     this.addDotsAndFruits();
@@ -52,41 +52,68 @@ export class Maze {
     // Ensure there's a valid path through the maze
     this.ensureValidPath();
     
-    // Add additional random walls to make the maze more challenging
-    this.addRandomWalls();
+    // Create some strategic openings
+    this.createStrategicOpenings();
   }
   
-  private addRandomWalls(): void {
-    // Add some random walls to make the maze more interesting
-    for (let y = 2; y < this.height - 2; y++) {
-      for (let x = 2; x < this.width - 2; x++) {
-        if (!this.cells[y][x].isWall && Math.random() < 0.2) {
-          // Check if adding a wall here would create a dead end
-          let adjacentWalls = 0;
-          if (this.cells[y-1][x].isWall) adjacentWalls++;
-          if (this.cells[y+1][x].isWall) adjacentWalls++;
-          if (this.cells[y][x-1].isWall) adjacentWalls++;
-          if (this.cells[y][x+1].isWall) adjacentWalls++;
+  private generateStructuredMaze(): void {
+    // Create a grid pattern with guaranteed paths
+    for (let y = 2; y < this.height - 2; y += 2) {
+      for (let x = 2; x < this.width - 2; x += 2) {
+        if (Math.random() < this.wallProbability) {
+          // Create a wall pattern that ensures connectivity
+          this.cells[y][x].isWall = true;
           
-          // Only add wall if it won't create a dead end
-          if (adjacentWalls < 2) {
-            this.cells[y][x].isWall = true;
+          // Randomly extend the wall in one direction
+          const direction = Math.floor(Math.random() * 4);
+          switch (direction) {
+            case 0: // Up
+              if (y > 2) this.cells[y-1][x].isWall = true;
+              break;
+            case 1: // Right
+              if (x < this.width - 3) this.cells[y][x+1].isWall = true;
+              break;
+            case 2: // Down
+              if (y < this.height - 3) this.cells[y+1][x].isWall = true;
+              break;
+            case 3: // Left
+              if (x > 2) this.cells[y][x-1].isWall = true;
+              break;
           }
         }
       }
     }
   }
   
-  private generateMaze(startX: number, startY: number): void {
-    // Use a simple algorithm to place walls randomly while ensuring connectivity
-    for (let y = 1; y < this.height - 1; y++) {
-      for (let x = 1; x < this.width - 1; x++) {
-        // Skip the starting position
-        if (x === startX && y === startY) continue;
-        
-        // Randomly place walls
-        if (Math.random() < this.wallProbability) {
-          this.cells[y][x].isWall = true;
+  private createStrategicOpenings(): void {
+    // Create some strategic openings to ensure better connectivity
+    for (let y = 2; y < this.height - 2; y++) {
+      for (let x = 2; x < this.width - 2; x++) {
+        if (this.cells[y][x].isWall) {
+          // Count adjacent walls
+          let wallCount = 0;
+          if (this.cells[y-1][x].isWall) wallCount++;
+          if (this.cells[y+1][x].isWall) wallCount++;
+          if (this.cells[y][x-1].isWall) wallCount++;
+          if (this.cells[y][x+1].isWall) wallCount++;
+          
+          // If too many adjacent walls, create an opening
+          if (wallCount > 2) {
+            this.cells[y][x].isWall = false;
+          }
+        }
+      }
+    }
+    
+    // Ensure the center area is clear for Pacman spawn
+    const centerX = Math.floor(this.width / 2);
+    const centerY = Math.floor(this.height / 2);
+    
+    // Clear a 3x3 area around the center
+    for (let y = centerY - 1; y <= centerY + 1; y++) {
+      for (let x = centerX - 1; x <= centerX + 1; x++) {
+        if (y > 0 && y < this.height - 1 && x > 0 && x < this.width - 1) {
+          this.cells[y][x].isWall = false;
         }
       }
     }
@@ -105,43 +132,59 @@ export class Maze {
       }
     }
     
-    // Add a few fruits
+    // Add a few fruits in accessible locations
     let fruitsAdded = 0;
-    const maxFruits = 3;
+    const maxFruits = 5;
     
     while (fruitsAdded < maxFruits) {
       const x = Math.floor(Math.random() * (this.width - 2)) + 1;
       const y = Math.floor(Math.random() * (this.height - 2)) + 1;
       
-      if (!this.cells[y][x].isWall && !this.cells[y][x].hasFruit) {
+      if (!this.cells[y][x].isWall && !this.cells[y][x].hasFruit && this.hasAccessiblePath(x, y)) {
         this.cells[y][x].hasFruit = true;
-        this.cells[y][x].hasDot = false; // Remove dot if there's a fruit
+        this.cells[y][x].hasDot = false;
         fruitsAdded++;
       }
     }
   }
   
+  private hasAccessiblePath(x: number, y: number): boolean {
+    // Check if there's at least one adjacent non-wall cell
+    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+    
+    for (const [dx, dy] of directions) {
+      const newX = x + dx;
+      const newY = y + dy;
+      
+      if (newX > 0 && newX < this.width - 1 && newY > 0 && newY < this.height - 1) {
+        if (!this.cells[newY][newX].isWall) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
   private ensureValidPath(): void {
-    // Simple flood fill to check and fix connectivity
     const visited: boolean[][] = Array(this.height).fill(null).map(() => 
       Array(this.width).fill(false)
     );
     
-    const startX = 1;
-    const startY = 1;
+    const centerX = Math.floor(this.width / 2);
+    const centerY = Math.floor(this.height / 2);
     
-    // Make sure the starting position is not a wall
-    this.cells[startY][startX].isWall = false;
+    // Make sure the center is clear for Pacman
+    this.cells[centerY][centerX].isWall = false;
     
-    // Flood fill from the starting position
-    this.floodFill(startX, startY, visited);
+    // Flood fill from the center
+    this.floodFill(centerX, centerY, visited);
     
-    // Check if any non-wall cell was not visited and make a path to it
+    // Check for and fix isolated areas
     for (let y = 1; y < this.height - 1; y++) {
       for (let x = 1; x < this.width - 1; x++) {
         if (!this.cells[y][x].isWall && !visited[y][x]) {
-          // Create a path from a visited cell to this isolated cell
-          this.createPathToIsolatedCell(x, y, visited);
+          this.createPathToCenter(x, y, centerX, centerY);
         }
       }
     }
@@ -159,46 +202,27 @@ export class Maze {
     this.floodFill(x, y - 1, visited);
   }
   
-  private createPathToIsolatedCell(x: number, y: number, visited: boolean[][]): void {
-    // Find the nearest visited cell and create a path
-    let nearestX = -1;
-    let nearestY = -1;
-    let minDistance = Infinity;
+  private createPathToCenter(x: number, y: number, centerX: number, centerY: number): void {
+    // Create a path from the isolated point to the center
+    let currentX = x;
+    let currentY = y;
     
-    for (let ny = 1; ny < this.height - 1; ny++) {
-      for (let nx = 1; nx < this.width - 1; nx++) {
-        if (visited[ny][nx]) {
-          const distance = Math.abs(nx - x) + Math.abs(ny - y);
-          if (distance < minDistance) {
-            minDistance = distance;
-            nearestX = nx;
-            nearestY = ny;
-          }
-        }
+    while (currentX !== centerX || currentY !== centerY) {
+      if (currentX < centerX) {
+        this.cells[currentY][currentX].isWall = false;
+        currentX++;
+      } else if (currentX > centerX) {
+        this.cells[currentY][currentX].isWall = false;
+        currentX--;
       }
-    }
-    
-    if (nearestX !== -1 && nearestY !== -1) {
-      // Create a straight path
-      this.createStraightPath(x, y, nearestX, nearestY);
-    }
-  }
-  
-  private createStraightPath(x1: number, y1: number, x2: number, y2: number): void {
-    // Create a simple L-shaped path
-    let currentX = x1;
-    let currentY = y1;
-    
-    // Move horizontally first
-    while (currentX !== x2) {
-      this.cells[currentY][currentX].isWall = false;
-      currentX += (x2 > currentX) ? 1 : -1;
-    }
-    
-    // Then move vertically
-    while (currentY !== y2) {
-      this.cells[currentY][currentX].isWall = false;
-      currentY += (y2 > currentY) ? 1 : -1;
+      
+      if (currentY < centerY) {
+        this.cells[currentY][currentX].isWall = false;
+        currentY++;
+      } else if (currentY > centerY) {
+        this.cells[currentY][currentX].isWall = false;
+        currentY--;
+      }
     }
   }
   

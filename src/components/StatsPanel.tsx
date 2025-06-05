@@ -38,7 +38,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
           </div>
           <div className="flex items-center">
             <p className="text-3xl font-bold text-green-400">{aliveCount}</p>
-            <p className="text-xl ml-2 text-gray-400">/ 10</p>
+            <p className="text-xl ml-2 text-gray-400">/ 12</p>
           </div>
           <p className="text-sm text-gray-400 mt-1">Surviving agents</p>
         </div>

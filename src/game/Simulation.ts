@@ -13,7 +13,7 @@ export class Simulation {
   private timeScale: number;
   private lastTime: number;
   private animationFrameId: number | null;
-  private numberOfGames: number = 20; // Increased from 10 to 20 games
+  private numberOfGames: number = 12; // Changed to 12 games
   private onPacmanDeath: () => void;
   private onScoreUpdate: (score: number) => void;
   private onGenerationComplete: (generation: number, bestScore: number) => void;
@@ -41,7 +41,7 @@ export class Simulation {
     this.geneticAlgorithm = new GeneticAlgorithm(
       0.1, // Mutation rate
       0.3, // Crossover rate
-      5,   // Increased elitism from 3 to 5
+      4,   // Elitism
       [16, 12, 4] // Neural network structure
     );
     
@@ -142,12 +142,16 @@ export class Simulation {
   private draw(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
-    // Calculate grid layout
-    const cols = 5; // Increased from 3 to 5 columns
-    const rows = Math.ceil(this.numberOfGames / cols); // Calculate rows needed
+    // Calculate grid layout - 4x3 grid
+    const cols = 4;
+    const rows = 3;
     
     const gameWidth = this.canvas.width / cols;
     const gameHeight = this.canvas.height / rows;
+    
+    // Draw background to eliminate black spaces
+    this.ctx.fillStyle = '#1f2937'; // Match the app's background color
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     
     // Draw each game in its grid cell
     for (let i = 0; i < this.games.length; i++) {
@@ -157,44 +161,42 @@ export class Simulation {
       const x = col * gameWidth;
       const y = row * gameHeight;
       
+      // Draw cell background
+      this.ctx.fillStyle = '#111827';
+      this.ctx.fillRect(x + 1, y + 1, gameWidth - 2, gameHeight - 2);
+      
       // Save context state
       this.ctx.save();
       
       // Set clipping region for this game
       this.ctx.beginPath();
-      this.ctx.rect(x, y, gameWidth, gameHeight);
+      this.ctx.rect(x + 2, y + 2, gameWidth - 4, gameHeight - 4);
       this.ctx.clip();
       
       // Translate context to the game's position
-      this.ctx.translate(x, y);
+      this.ctx.translate(x + 2, y + 2);
       
       // Scale to fit the game in its cell
-      const scaleX = gameWidth / this.canvas.width;
-      const scaleY = gameHeight / this.canvas.height;
+      const scaleX = (gameWidth - 4) / this.canvas.width;
+      const scaleY = (gameHeight - 4) / this.canvas.height;
       this.ctx.scale(scaleX, scaleY);
       
       // Draw the game
       this.games[i].draw(this.ctx);
       
       // Draw game number and dead indicator if game is over
-      this.ctx.font = '16px Arial'; // Reduced font size
+      this.ctx.font = '16px Arial';
       this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      this.ctx.fillText(`#${i + 1}`, 5, 20);
+      this.ctx.fillText(`#${i + 1}`, 10, 25);
       
       if (this.games[i].isGameOver()) {
         this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-        this.ctx.fillText('DEAD', 5, 40);
+        this.ctx.fillText('DEAD', 10, 45);
       }
       
       // Restore context state
       this.ctx.restore();
     }
-    
-    // Draw generation number
-    this.ctx.font = '20px Arial';
-    this.ctx.fillStyle = 'white';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText(`Generation: ${this.generation}`, this.canvas.width / 2, 30);
   }
   
   private areAllGamesOver(): boolean {

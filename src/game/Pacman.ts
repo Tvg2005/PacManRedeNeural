@@ -28,6 +28,8 @@ export class Pacman {
   private visionRange: number = 5; // How far Pacman can "see"
   private powerUpTimer: number = 0;
   private isPoweredUp: boolean = false;
+  private lastPosition: Position = { x: 0, y: 0 };
+  private stationaryTime: number = 0;
   
   constructor(x: number, y: number, cellSize: number, maze: Maze, ghosts: Ghost[], brain?: NeuralNetwork) {
     this.x = x;
@@ -53,6 +55,9 @@ export class Pacman {
   
   update(deltaTime: number): void {
     if (!this.alive) return;
+    
+    // Store last position
+    this.lastPosition = { x: this.x, y: this.y };
     
     // Update power-up timer
     if (this.isPoweredUp) {
@@ -81,6 +86,20 @@ export class Pacman {
     
     // Move based on the selected direction
     this.move();
+    
+    // Check if Pacman is stationary
+    if (Math.abs(this.x - this.lastPosition.x) < 0.1 && 
+        Math.abs(this.y - this.lastPosition.y) < 0.1) {
+      this.stationaryTime += deltaTime;
+      // Penalty for staying still
+      if (this.stationaryTime > 0.5) {
+        this.score -= 5 * deltaTime;
+      }
+    } else {
+      this.stationaryTime = 0;
+      // Small reward for moving
+      this.score += deltaTime;
+    }
     
     // Check for collisions with dots and fruits
     this.checkCollectibles();
@@ -160,7 +179,7 @@ export class Pacman {
     let newX = this.x;
     let newY = this.y;
     
-    const speed = 2; // Pixels per update
+    const speed = 2 * this.cellSize / 20; // Adjust speed relative to cell size
     
     switch (this.direction) {
       case Direction.UP:
@@ -179,45 +198,48 @@ export class Pacman {
         break;
     }
     
-    // Calculate the new cell position
+    // Calculate the new cell position and check for wall collisions
     const newCellX = Math.floor(newX / this.cellSize);
     const newCellY = Math.floor(newY / this.cellSize);
     
     // Check if the new position would hit a wall
     const newCell = this.maze.getCell(newCellX, newCellY);
+    const currentCell = this.maze.getCell(currentCellX, currentCellY);
     
     if (newCell && !newCell.isWall) {
-      this.x = newX;
-      this.y = newY;
-    } else {
-      // Hitting a wall is a small penalty
-      this.score -= 1;
-      
-      // Check if we're trapped (walls in all four directions)
-      let trapped = true;
-      
-      const directions = [
-        { dx: 0, dy: -1 }, // Up
-        { dx: 1, dy: 0 },  // Right
-        { dx: 0, dy: 1 },  // Down
-        { dx: -1, dy: 0 }  // Left
+      // Additional collision checks for wall corners
+      const radius = this.cellSize * 0.4;
+      const corners = [
+        { x: newX - radius, y: newY - radius },
+        { x: newX + radius, y: newY - radius },
+        { x: newX - radius, y: newY + radius },
+        { x: newX + radius, y: newY + radius }
       ];
       
-      for (const dir of directions) {
-        const checkX = currentCellX + dir.dx;
-        const checkY = currentCellY + dir.dy;
-        const checkCell = this.maze.getCell(checkX, checkY);
-        
-        if (checkCell && !checkCell.isWall) {
-          trapped = false;
+      let canMove = true;
+      for (const corner of corners) {
+        const cornerCellX = Math.floor(corner.x / this.cellSize);
+        const cornerCellY = Math.floor(corner.y / this.cellSize);
+        const cornerCell = this.maze.getCell(cornerCellX, cornerCellY);
+        if (cornerCell && cornerCell.isWall) {
+          canMove = false;
           break;
         }
       }
       
-      if (trapped) {
-        // Being trapped is a significant penalty
-        this.score -= 50;
+      if (canMove) {
+        this.x = newX;
+        this.y = newY;
+      } else {
+        // Align with grid if blocked
+        this.x = currentCellX * this.cellSize + this.cellSize / 2;
+        this.y = currentCellY * this.cellSize + this.cellSize / 2;
       }
+    } else {
+      // Align with grid if hitting a wall
+      this.x = currentCellX * this.cellSize + this.cellSize / 2;
+      this.y = currentCellY * this.cellSize + this.cellSize / 2;
+      this.score -= 1; // Small penalty for hitting walls
     }
   }
   
@@ -227,12 +249,12 @@ export class Pacman {
     
     // Check for dots
     if (this.maze.collectDot(cellX, cellY)) {
-      this.score += 10; // Reward for collecting dots
+      this.score += 10;
     }
     
     // Check for fruits
     if (this.maze.collectFruit(cellX, cellY)) {
-      this.score += 50; // Bigger reward for collecting fruits
+      this.score += 200; // Increased from 50 to 200
       this.powerUp();
     }
   }
@@ -249,7 +271,7 @@ export class Pacman {
         if (this.isPoweredUp) {
           // Eat the ghost
           ghost.reset();
-          this.score += 200; // Big reward for eating a ghost
+          this.score += 500; // Increased from 200 to 500
         } else {
           // Got caught by a ghost
           this.die();
@@ -267,7 +289,7 @@ export class Pacman {
   die(): void {
     if (this.alive) {
       this.alive = false;
-      this.score -= 100; // Big penalty for dying
+      this.score -= 300; // Increased death penalty from 100 to 300
     }
   }
   
