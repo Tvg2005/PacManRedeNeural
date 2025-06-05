@@ -16,13 +16,16 @@ export class Game {
   private timeScale: number = 1;
   
   constructor(width: number, height: number, brain?: NeuralNetwork) {
-    this.width = width;
-    this.height = height;
-    this.cellSize = Math.min(width, height) / 20; // Adjust cell size based on canvas dimensions
+    // Ensure minimum dimensions
+    this.width = Math.max(200, width);
+    this.height = Math.max(200, height);
     
-    // Calculate maze dimensions based on canvas size
-    const mazeWidth = Math.floor(width / this.cellSize);
-    const mazeHeight = Math.floor(height / this.cellSize);
+    // Ensure cell size is reasonable (minimum 10px)
+    this.cellSize = Math.max(10, Math.min(this.width, this.height) / 20);
+    
+    // Calculate maze dimensions and ensure minimum size of 3x3
+    const mazeWidth = Math.max(3, Math.floor(this.width / this.cellSize));
+    const mazeHeight = Math.max(3, Math.floor(this.height / this.cellSize));
     
     // Create the maze
     this.maze = new Maze(mazeWidth, mazeHeight);

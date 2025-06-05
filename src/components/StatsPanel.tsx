@@ -48,7 +48,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
             <Award size={20} className="text-purple-400 mr-2" />
             <h3 className="text-lg font-semibold">Best Score Ever</h3>
           </div>
-          <p className="text-3xl font-bold text-purple-400">{bestScore}</p>
+          <p className="text-3xl font-bold text-purple-400">{Math.floor(bestScore)}</p>
           <p className="text-sm text-gray-400 mt-1">Highest across all generations</p>
         </div>
         
@@ -57,7 +57,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
             <Award size={20} className="text-blue-400 mr-2" />
             <h3 className="text-lg font-semibold">Generation Best</h3>
           </div>
-          <p className="text-3xl font-bold text-blue-400">{currentBestScore}</p>
+          <p className="text-3xl font-bold text-blue-400">{Math.floor(currentBestScore)}</p>
           <p className="text-sm text-gray-400 mt-1">Highest in current generation</p>
         </div>
       </div>

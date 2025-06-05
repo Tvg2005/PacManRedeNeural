@@ -91,14 +91,14 @@ export class Pacman {
     if (Math.abs(this.x - this.lastPosition.x) < 0.1 && 
         Math.abs(this.y - this.lastPosition.y) < 0.1) {
       this.stationaryTime += deltaTime;
-      // Penalty for staying still
+      // Increased penalty for staying still
       if (this.stationaryTime > 0.5) {
-        this.score -= 5 * deltaTime;
+        this.score -= 10 * deltaTime; // Increased from 5 to 10
       }
     } else {
       this.stationaryTime = 0;
-      // Small reward for moving
-      this.score += deltaTime;
+      // Small penalty for moving to encourage efficient movement
+      this.score -= 0.3;
     }
     
     // Check for collisions with dots and fruits
@@ -294,7 +294,7 @@ export class Pacman {
   }
   
   getScore(): number {
-    return this.score;
+    return Math.floor(this.score);
   }
   
   isAlive(): boolean {
