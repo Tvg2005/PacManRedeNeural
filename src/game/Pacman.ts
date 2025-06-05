@@ -88,11 +88,11 @@ export class Pacman {
     if (Math.abs(this.x - this.lastPosition.x) < 0.1 && Math.abs(this.y - this.lastPosition.y) < 0.1) {
       this.stationaryTime += deltaTime;
       if (this.stationaryTime > 0.5) {
-        this.score -= 10 * deltaTime;
+        this.score -= 2 * deltaTime;
       }
     } else {
       this.stationaryTime = 0;
-      this.score -= 0.3;
+      this.score -= 0.05;
     }
 
     this.checkCollectibles();
@@ -114,7 +114,7 @@ export class Pacman {
     const occurrences = this.positionHistory.filter(pos => pos.x === currentPos.x && pos.y === currentPos.y).length;
 
     if (occurrences >= 4) {  
-      this.score -= 5; 
+      this.score -= 2; 
     }
   }
 
@@ -123,7 +123,7 @@ export class Pacman {
     if (nearestDistance < this.lastDistanceToGoal) {
       this.score += 1;
     } else if (nearestDistance > this.lastDistanceToGoal + 0.1) {
-      this.score -= 0.5;
+      this.score -= 0.1;
     }
     this.lastDistanceToGoal = nearestDistance;
   }
@@ -270,11 +270,11 @@ export class Pacman {
     const cellY = Math.floor(this.y / this.cellSize);
 
     if (this.maze.collectDot(cellX, cellY)) {
-      this.score += 20;
+      this.score += 25;
     }
 
     if (this.maze.collectFruit(cellX, cellY)) {
-      this.score += 100;
+      this.score += 75;
       this.powerUp();
     }
   }

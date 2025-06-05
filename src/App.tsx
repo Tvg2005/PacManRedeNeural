@@ -51,7 +51,7 @@ function App() {
       <header className="bg-gray-800 p-4 shadow-md">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
           <h1 className="text-3xl font-bold text-yellow-400 mb-2 md:mb-0">
-            Pacman <span className="text-blue-400">Neural Network</span>
+            <img className='h-12' src='pacmanlogo.png'></img>PacMan <span className="text-blue-400">Rede Neural</span>
           </h1>
           <div className="flex space-x-4 items-center">
             <button 
@@ -59,7 +59,7 @@ function App() {
               className="flex items-center space-x-1 text-gray-300 hover:text-white"
             >
               <Info size={18} />
-              <span>Info</span>
+              <span>Sobre o projeto</span>
             </button>
             <div className="flex space-x-2">
               {!isRunning ? (
@@ -112,6 +112,7 @@ function App() {
             </div>
           </div>
         </div>
+        
       </header>
       
       <main className="flex-grow p-4">
@@ -125,6 +126,15 @@ function App() {
               onPacmanDeath={handlePacmanDeath}
               onScoreUpdate={handleScoreUpdate}
             />
+            <div className="flex justify-center items-center flex-col p-4 text-gray-300">
+                <span className='text-lg font-semibold'>Projeto feito para demonstrar utilização, evolução e metodologia das redes neurais</span>
+                <span className='text-lg font-semibold'>
+                  Feito por <a className="text-blue-400" href="https://www.linkedin.com/in/thiago-ven%C3%A2ncio-690790267/">Thiago Venâncio</a>
+                </span>
+                <span className='text-gray-400'>Devido a complexidade do jogo e a quantidade possível de movimentos e variáveis em que a rede neural precisa processar</span>
+                <span className='text-gray-400'> A rede neural irá levar uma grande quantidade de gerações para conseguir ficar boa no jogo</span>
+                <span className='font-semibold text-yellow-400'>Obs: Os botões de acelerar a velocidade não estão funcionando</span>
+            </div>
           </div>
           <div className="bg-gray-800 rounded-lg shadow-xl p-4">
             <StatsPanel 
@@ -135,6 +145,7 @@ function App() {
             />
           </div>
         </div>
+        
       </main>
       
       {showInfo && (

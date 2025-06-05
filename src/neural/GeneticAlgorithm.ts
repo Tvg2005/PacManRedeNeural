@@ -36,7 +36,7 @@ export class GeneticAlgorithm {
     
     // If this is the first generation, create a random population
     if (populationSize === 0) {
-      return this.createInitialPopulation(10); // Default to 10 individuals
+      return this.createInitialPopulation(16); // Default to 10 individuals
     }
     
     // Create a new generation
