@@ -96,18 +96,6 @@ function App() {
                 >
                   5x
                 </button>
-                <button 
-                  onClick={() => handleSpeedChange(10)} 
-                  className={`text-xs ${speed === 10 ? 'text-yellow-400 font-bold' : 'text-gray-300'}`}
-                >
-                  10x
-                </button>
-                <button 
-                  onClick={() => handleSpeedChange(50)} 
-                  className={`text-xs ${speed === 50 ? 'text-yellow-400 font-bold' : 'text-gray-300'}`}
-                >
-                  50x
-                </button>
               </div>
             </div>
           </div>
@@ -133,7 +121,6 @@ function App() {
                 </span>
                 <span className='text-gray-400'>Devido a complexidade do jogo e a quantidade possível de movimentos e variáveis em que a rede neural precisa processar</span>
                 <span className='text-gray-400'> A rede neural irá levar uma grande quantidade de gerações para conseguir ficar boa no jogo</span>
-                <span className='font-semibold text-yellow-400'>Obs: Os botões de acelerar a velocidade não estão funcionando</span>
             </div>
           </div>
           <div className="bg-gray-800 rounded-lg shadow-xl p-4">
