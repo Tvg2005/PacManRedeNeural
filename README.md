@@ -1,7 +1,17 @@
 # 🧠 PacMan Rede Neural 🎮
 Este projeto é um experimento de Inteligência Artificial com Aprendizado Evolutivo, onde uma rede neural é treinada para jogar Pac-Man de forma autônoma. A IA aprende por meio de um algoritmo genético, aprimorando suas decisões a cada geração.
 
-## 🚀 Visão Geral
+
+## 🚀 Passos para execução
+
+- Clonar repositório - git clone https://github.com/Tvg2005/PacManRedeNeural.git
+- Instalar o node caso não tenha instalado na máquina - https://nodejs.org/en/download
+- Executar no terminal - npm install
+- Executar no terminal - npm run dev
+- Acessar - http://localhost:5173/
+
+
+## 👀 Visão Geral
 Neste sistema, agentes controlados por uma rede neural enfrentam o desafio de jogar Pac-Man. Cada agente decide entre quatro possíveis movimentos:
 
 - ⬆️ Cima
