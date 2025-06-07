@@ -116,9 +116,6 @@ function App() {
             />
             <div className="flex justify-center items-center flex-col p-4 text-gray-300">
                 <span className='text-lg font-semibold'>Projeto feito para demonstrar utilização, evolução e metodologia das redes neurais</span>
-                <span className='text-lg font-semibold'>
-                  Feito por <a className="text-blue-400" href="https://www.linkedin.com/in/thiago-ven%C3%A2ncio-690790267/">Thiago Venâncio</a>
-                </span>
                 <span className='text-gray-400'>Devido a complexidade do jogo e a quantidade possível de movimentos e variáveis em que a rede neural precisa processar</span>
                 <span className='text-gray-400'> A rede neural irá levar uma grande quantidade de gerações para conseguir ficar boa no jogo</span>
             </div>
