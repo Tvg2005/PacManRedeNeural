@@ -80,5 +80,5 @@ Esses dados ajudam a monitorar a performance da IA e avaliar a eficiência da ev
 
 - O ciclo se repete, aprimorando a habilidade dos agentes a cada geração.
 
-## 🎯 Objetivo
+##  🎯 Objetivo
 Criar uma IA capaz de jogar Pac-Man de forma eficaz apenas por meio de tentativa, erro e evolução, sem qualquer conhecimento prévio do jogo ou aprendizado supervisionado.
